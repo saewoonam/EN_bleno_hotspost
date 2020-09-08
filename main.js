@@ -3,6 +3,7 @@ var bleno = require('bleno');
 var BlenoPrimaryService = bleno.PrimaryService;
 
 var EchoCharacteristic = require('./characteristic');
+var TimeCharacteristic = require('./get_time_characteristic');
 var service_uuid = 'c019';
 var isAdvertising = false;
 var bluetooth_name = 'NISTCO19';
@@ -30,7 +31,8 @@ bleno.on('advertisingStart', function(error) {
       new BlenoPrimaryService({
         uuid: service_uuid,
         characteristics: [
-          new EchoCharacteristic(remote)
+          new EchoCharacteristic(remote),
+	  new TimeCharacteristic()
         ]
       })
     ]);
@@ -44,9 +46,9 @@ bleno.on ('accept', function (clientAddress) {
     console.log ("Connection ACCEPTED from address:" + clientAddress);
     remote['mac'] = clientAddress;
     // Stop advertising
-    bleno.stopAdvertising ();
-    isAdvertising = false;
-    console.log ( 'Stop advertising …');
+    // bleno.stopAdvertising ();
+    // isAdvertising = false;
+    // console.log ( 'Stop advertising …');
 });
 
 

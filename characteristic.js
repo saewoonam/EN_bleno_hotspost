@@ -26,23 +26,24 @@ EchoCharacteristic.prototype.onReadRequest = function(offset, callback) {
 };
 
 EchoCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResponse, callback) {
-	this._value = data;
+    this._value = data;
 
-	// console.log('EchoCharacteristic - onWriteRequest: value = ' + this._value.toString('hex'));
+    // console.log('EchoCharacteristic - onWriteRequest: value = ' + this._value.toString('hex'));
     name = this._remote['mac'].replace(/:/g,'')
-	console.log('EchoCharacteristic - onWriteRequest: filename: ' + name + 
-		' encounter_index = ' + this._value.readUInt8(0) + ' len: ' + this._value.length);
-	// console.log('Data: '+this._value.slice(4, this._value.length).length);
-	fs.appendFileSync(name, this._value.slice(4, this._value.length));
-	console.log('remote '+typeof(this._remote['mac']));
+    console.log('EchoCharacteristic - onWriteRequest: filename: ' + name + 
+        ' encounter_index = ' + this._value.readUInt32LE(0) + ' len: ' + this._value.length);
+    // console.log('index: ' + this._value.slice(0,4).toString('hex'));
+    // console.log('Data: '+this._value.slice(4, this._value.length).length);
+    fs.appendFileSync(name, this._value.slice(4, this._value.length));
+    // console.log('remote '+typeof(this._remote['mac']));
 
-	if (this._updateValueCallback) {
-		console.log('EchoCharacteristic - onWriteRequest: notifying');
+    if (this._updateValueCallback) {
+        console.log('EchoCharacteristic - onWriteRequest: notifying');
 
-		this._updateValueCallback(this._value);
-	}
+        this._updateValueCallback(this._value);
+    }
 
-	callback(this.RESULT_SUCCESS);
+    callback(this.RESULT_SUCCESS);
 };
 
 EchoCharacteristic.prototype.onSubscribe = function(maxValueSize, updateValueCallback) {
