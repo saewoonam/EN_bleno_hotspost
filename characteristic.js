@@ -13,7 +13,7 @@ var EchoCharacteristic = function(remote) {
     value: null
   });
   this._remote = remote;
-  this._value = new Buffer(0);
+  this._value = new Buffer.alloc(0);
   this._updateValueCallback = null;
 };
 

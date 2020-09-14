@@ -12,7 +12,7 @@ var TimeCharacteristic = function() {
     properties: ['read'],
     value: null
   });
-  this._value = new Buffer(0);
+  this._value = new Buffer.alloc(0);
   this._updateValueCallback = null;
 };
 
@@ -20,7 +20,7 @@ util.inherits(TimeCharacteristic, BlenoCharacteristic);
 
 TimeCharacteristic.prototype.onReadRequest = function(offset, callback) {
   time = Date.now();
-  this._value = new Buffer(8);
+  this._value = new Buffer.alloc(8);
   this._value.writeUInt32LE(parseInt(time/1000));
   this._value.writeUInt32LE(parseInt(time%1000), 4);
   console.log('TimeCharacteristic - onReadRequest: value = ' + this._value.toString('hex'));

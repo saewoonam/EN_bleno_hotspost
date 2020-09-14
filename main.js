@@ -1,5 +1,10 @@
-var bleno = require('bleno');
-
+console.log("Starting...");
+if (process.platform==="darwin") {
+    console.log("got mac, use different bleno library");
+    var bleno = require('bleno-mac');
+} else {
+    var bleno = require('bleno');
+}
 var BlenoPrimaryService = bleno.PrimaryService;
 
 var EchoCharacteristic = require('./characteristic');
@@ -9,7 +14,7 @@ var isAdvertising = false;
 var bluetooth_name = 'NISTCO19';
 var remote = {};
 
-console.log('bleno - echo');
+console.log('bleno - EN hotspot');
 
 bleno.on('stateChange', function(state) {
   console.log('on -> stateChange: ' + state);
