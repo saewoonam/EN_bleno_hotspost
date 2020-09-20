@@ -2,6 +2,7 @@ console.log("Starting...");
 if (process.platform==="darwin") {
     console.log("got mac, use different bleno library");
     var bleno = require('bleno-mac');
+    // debug.disable()
 } else {
     var bleno = require('bleno');
 }

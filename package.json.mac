@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "bleno": "github:notjosh/bleno#inject-bindings",
+    "bleno-mac": "github:notjosh/bleno-mac",
+    "xpc-connection": "github:sandeepmistry/node-xpc-connection#pull/26/head"
+  }
+}
