@@ -8,7 +8,7 @@ if (process.platform==="darwin") {
 }
 var BlenoPrimaryService = bleno.PrimaryService;
 
-var EchoCharacteristic = require('./characteristic');
+var DataCharacteristic = require('./data_characteristic');
 var TimeCharacteristic = require('./get_time_characteristic');
 var service_uuid = 'c019';
 var isAdvertising = false;
@@ -37,7 +37,7 @@ bleno.on('advertisingStart', function(error) {
       new BlenoPrimaryService({
         uuid: service_uuid,
         characteristics: [
-          new EchoCharacteristic(remote),
+          new DataCharacteristic(remote),
 	  new TimeCharacteristic()
         ]
       })
