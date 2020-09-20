@@ -3,11 +3,17 @@
 // import _startCase from 'lodash/startCase'
 // import _get from 'lodash/get'
 
-import StructSchema from './struct-schema'
+// import StructSchema from './struct-schema'
+var ss = require('./struct-schema')
 
 const BLOCK_SIZE = 32 // bytes
 
-const uSound = new StructSchema([
+const uSound = new ss.StructSchema([
+  {
+    key: 'n',
+    type: 'uint8',
+    littleEndian: true
+  },
   {
     key: 'left',
     type: 'uint16',
@@ -28,24 +34,19 @@ const uSound = new StructSchema([
     type: 'uint16',
     littleEndian: true
   },
-  {
-    key: 'n',
-    type: 'uint8',
-    littleEndian: true
-  },
 ])
 
-const encounterRecord = new StructSchema([
-  {
-    key: 'mac',
-    type: 'uint8',
-    length: 6,
-    littleEndian: true
-  },
+const encounterRecord = new ss.StructSchema([
   {
     key: 'minute',
     type: 'uint32',
     length: 1,
+    littleEndian: true
+  },
+  {
+    key: 'mac',
+    type: 'uint8',
+    length: 6,
     littleEndian: true
   },
   {
@@ -66,7 +67,7 @@ const encounterRecord = new StructSchema([
     length: 12
   },
   {
-    key: 'public_key',
+    key: 'encounter_id',
     type: 'uint8',
     length: 32,
     littleEndian: true
@@ -121,19 +122,20 @@ function getDataFromView(arrayView) {
   timestamp = timestamp.split('.')
   timestamp = timestamp[0]
 
-  let clientKey = data2hex(parsed.public_key)
-
+  parsed.encounter_id = data2hex(parsed.encounter_id)
+  parsed.mac = data2hex(parsed.mac)
+  let client_key = parsed.encounter_id
   return {
     ...parsed,
     timestamp,
-    clientKey
+    client_key 
   }
 }
 
-export function bytesToData(raw){
+function bytesToData(raw){
   const numBlocks = raw.byteLength / BLOCK_SIZE
   let last_mark = 0
-
+  // console.log('numBlocks: '+numBlocks);
   // for (let index = 0; index < numBlocks; index++) {
   //   let view = new Uint32Array(raw.buffer, index * BLOCK_SIZE, BLOCK_SIZE / 4)
 
@@ -142,20 +144,20 @@ export function bytesToData(raw){
   //   }
   // }
 
-  let last_start = last_mark + 2
-
+  // let last_start = last_mark + 2
+  let last_start = 0 
   let data = []
 
   for (let index = last_start; index < numBlocks - 1; index += 2) {
     let row = new DataView(raw.buffer, index * BLOCK_SIZE, 2 * BLOCK_SIZE)
     let entry = getDataFromView(row)
-
     data.push(entry)
   }
 
   return data
 }
 
+module.exports = {bytesToData}
 // Comment the stuff below ... not needed yet
 // function getPaths(obj){
 //   return _toPairs(obj).reduce((ret, [key, value]) => {

@@ -33,7 +33,8 @@ const PRIMITIVES = {
   }
 }
 
-export default class StructSchema {
+// export default class StructSchema {
+class StructSchema {
   constructor(schema){
     this._totalBytes = 0
     this._props = []
@@ -107,3 +108,5 @@ export default class StructSchema {
     return ret
   }
 }
+
+module.exports = {StructSchema}
