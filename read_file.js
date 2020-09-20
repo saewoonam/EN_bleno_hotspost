@@ -68,7 +68,7 @@ readable.on('readable', () => {
     }
 });
 readable.on('close', () => {
-    console.log('closed ', block.length)
+    // console.log('closed ', block.length)
     let encounters = block.map(d => {
         return {
             clientKey: d.encounter_id,
@@ -76,7 +76,7 @@ readable.on('close', () => {
             _meta: d
         }
     })
-    console.log("convert last block");
+    console.log("convert last block", block.length, ":", encounters[encounters.length-1].timestamp);
 });
 
 if (false) {
