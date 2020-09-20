@@ -11,6 +11,8 @@ readable.on('readable', () => {
 
     let chunk;
     let skip = 0;
+    let part_one = true;
+    let count = 0;
     while (null !== (chunk = readable.read(32))) {
         if (skip>0) {
             skip -= 1;
@@ -19,9 +21,16 @@ readable.on('readable', () => {
             skip = 2;
         } else {
             // console.log(`read: ${chunk.length}`);
-            d = convert.bytesToData(chunk);
-            console.log(chunk)
-
+            if (part_one) {
+                chunk.copy(row_buffer, 0, 0);
+                part_one = false;
+            } else {
+                chunk.copy(row_buffer, 32, 0);
+                d = convert.bytesToData(row_buffer);
+                console.log(count, chunk)
+                part_one = true;
+                count += 1;
+            }
         }
     }
 });
