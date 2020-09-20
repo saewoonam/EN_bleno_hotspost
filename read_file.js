@@ -1,5 +1,6 @@
 var fs = require('fs')
 var convert = require('./bytes-to-csv.js')
+var upload = require('./upload.js');
 
 zeros = Buffer.alloc(32);
 zeros.fill(0);
@@ -57,6 +58,7 @@ readable.on('readable', () => {
                                 _meta: d
                             }
                         })
+                        upload.upload_block(encounters);
                         console.log("convert block of 50: ", data.timestamp);
                         count = 0;
                         block = [];
@@ -77,6 +79,7 @@ readable.on('close', () => {
         }
     })
     console.log("convert last block", block.length, ":", encounters[encounters.length-1].timestamp);
+    upload.upload_block(encounters);
 });
 
 if (false) {
