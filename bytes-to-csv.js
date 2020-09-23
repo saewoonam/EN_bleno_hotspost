@@ -125,6 +125,7 @@ function getDataFromView(arrayView) {
   parsed.encounter_id = data2hex(parsed.encounter_id)
   parsed.mac = data2hex(parsed.mac)
   let client_key = parsed.encounter_id
+  delete parsed.encounter_id
   return {
     ...parsed,
     timestamp,
