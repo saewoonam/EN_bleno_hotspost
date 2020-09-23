@@ -7,8 +7,8 @@ zeros.fill(0);
 console.log(zeros.toString('hex'));
 row_buffer = Buffer.alloc(64);
 
-// const readable = fs.createReadStream('588e8166afd3',null);
-const readable = fs.createReadStream('588e81a54819',null);
+const readable = fs.createReadStream('588e8166afd3',null);
+// const readable = fs.createReadStream('588e81a54819',null);
 let block = [];
 let part_one = true;
 let chunk;
@@ -59,7 +59,7 @@ readable.on('readable', () => {
                             }
                         })
 			// console.log(encounters);
-                        upload.upload_batch(encounters);
+                        upload.upload_batch_v1(encounters);
                         console.log("convert block of 50: ", data.timestamp);
                         count = 0;
                         block = [];
@@ -81,7 +81,7 @@ readable.on('close', () => {
     })
     console.log("convert last block", block.length, ":", encounters[encounters.length-1].timestamp);
     // console.log(JSON.stringify({"encounters": encounters}));
-    upload.upload_batch(encounters);
+    upload.upload_batch_v1(encounters);
 });
 
 if (false) {
