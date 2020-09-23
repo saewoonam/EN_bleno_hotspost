@@ -1,14 +1,14 @@
 var fs = require('fs')
 var convert = require('./bytes-to-csv.js')
-var upload = require('./upload.js');
+var upload = require('./upload2.js');
 
 zeros = Buffer.alloc(32);
 zeros.fill(0);
 console.log(zeros.toString('hex'));
 row_buffer = Buffer.alloc(64);
 
-const readable = fs.createReadStream('588e8166afd3',null);
-// const readable = fs.createReadStream('588e81a54819',null);
+// const readable = fs.createReadStream('588e8166afd3',null);
+const readable = fs.createReadStream('588e81a54819',null);
 let block = [];
 let part_one = true;
 let chunk;
@@ -53,12 +53,13 @@ readable.on('readable', () => {
                     if (count==50) {
                         let encounters = block.map(d => {
                             return {
-                                clientKey: d.encounter_id,
+                                clientKey: d.client_key,
                                 timestamp: d.timestamp,
                                 _meta: d
                             }
                         })
-                        upload.upload_block(encounters);
+			// console.log(encounters);
+                        upload.upload_batch(encounters);
                         console.log("convert block of 50: ", data.timestamp);
                         count = 0;
                         block = [];
@@ -73,13 +74,14 @@ readable.on('close', () => {
     // console.log('closed ', block.length)
     let encounters = block.map(d => {
         return {
-            clientKey: d.encounter_id,
+            clientKey: d.client_key,
             timestamp: d.timestamp,
             _meta: d
         }
     })
     console.log("convert last block", block.length, ":", encounters[encounters.length-1].timestamp);
-    upload.upload_block(encounters);
+    // console.log(JSON.stringify({"encounters": encounters}));
+    upload.upload_batch(encounters);
 });
 
 if (false) {
