@@ -1,6 +1,7 @@
 var fs = require('fs')
 var convert = require('./bytes-to-csv.js')
-var upload = require('./upload2.js');
+// var upload = require('./upload2.js');
+var upload = require('./upload3.js');
 
 zeros = Buffer.alloc(32);
 zeros.fill(0);
@@ -58,8 +59,8 @@ readable.on('readable', () => {
                                 _meta: d
                             }
                         })
-			// console.log(encounters);
-                        upload.upload_batch_v1(encounters);
+			            // console.log(encounters);
+                        // upload.upload_batch_v1(encounters);
                         console.log("convert block of 50: ", data.timestamp);
                         count = 0;
                         block = [];
@@ -81,7 +82,15 @@ readable.on('close', () => {
     })
     console.log("convert last block", block.length, ":", encounters[encounters.length-1].timestamp);
     // console.log(JSON.stringify({"encounters": encounters}));
-    upload.upload_batch_v1(encounters);
+    // upload.upload_batch(encounters);
+    // this phin2 works
+    // upload.upload_batch_phin2(encounters);
+    upload.upload_batch_phin(encounters)
+        .then((res) => {
+            console.log(res.body.toString())
+        })
+        .catch((e) => console.log(e));
+    // console.log(encounters)
 });
 
 if (false) {
