@@ -34,9 +34,14 @@ DataCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResp
         ' encounter_index = ' + this._value.readUInt32LE(0) + ' len: ' + this._value.length);
     // console.log('index: ' + this._value.slice(0,4).toString('hex'));
     // console.log('Data: '+this._value.slice(4, this._value.length).length);
-    fs.appendFileSync(name, this._value.slice(4, this._value.length));
-    // console.log('remote '+typeof(this._remote['mac']));
-
+    var device_name;
+    if (this._value.readUInt32LE(0)==0xFFFFFFFF) { // got name for debugging
+        var device_name = this._value.slice(4+32, 4+32+8).toString();
+        console.log('Name: '+device_name);
+    } else {
+        fs.appendFileSync(name, this._value.slice(4, this._value.length));
+        // console.log('remote '+typeof(this._remote['mac']));
+    }
     if (this._updateValueCallback) {
         console.log('DataCharacteristic - onWriteRequest: notifying');
 
