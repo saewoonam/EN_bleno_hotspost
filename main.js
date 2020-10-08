@@ -10,6 +10,8 @@ var BlenoPrimaryService = bleno.PrimaryService;
 
 var DataCharacteristic = require('./data_characteristic');
 var TimeCharacteristic = require('./get_time_characteristic');
+var upload_file = require('./upload_file');
+
 var service_uuid = 'c019';
 var isAdvertising = false;
 var bluetooth_name = 'NISTCO19';
@@ -51,6 +53,7 @@ bleno.on('advertisingStart', function(error) {
 bleno.on ('accept', function (clientAddress) {
     console.log ("Connection ACCEPTED from address:" + clientAddress);
     remote['mac'] = clientAddress;
+    remote['device_name'] = '';
     // Stop advertising
     // bleno.stopAdvertising ();
     // isAdvertising = false;
@@ -62,6 +65,15 @@ bleno.on ('accept', function (clientAddress) {
 // Disconnected from a client
 bleno.on ('disconnect', function (clientAddress) {
     console.log ( "Disconnected from address:" + clientAddress);
+    console.log ("remote", remote);
+    if (remote['device_name'].length > 0) {
+         name = remote['device_name'];
+    } else {
+         name = remote['mac'].replace(/:/g,'')
+    }
+    upload_file.upload_file(name);
+    // delete file from local storage
+    upload_file.rm(name);
     // restart advertising …
     bleno.startAdvertising(bluetooth_name, [service_uuid]);
     isAdvertising = true;
