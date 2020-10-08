@@ -15,6 +15,8 @@ var DataCharacteristic = function(remote) {
   this._remote = remote;
   this._value = new Buffer.alloc(0);
   this._updateValueCallback = null;
+  this.filename = '';
+  this.device_name = '';
 };
 
 util.inherits(DataCharacteristic, BlenoCharacteristic);
@@ -28,19 +30,19 @@ DataCharacteristic.prototype.onReadRequest = function(offset, callback) {
 DataCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResponse, callback) {
     this._value = data;
 
-    // console.log('DataCharacteristic - onWriteRequest: value = ' + this._value.toString('hex'));
-    name = this._remote['mac'].replace(/:/g,'')
-    console.log('DataCharacteristic - onWriteRequest: filename: ' + name + 
+    console.log('DataCharacteristic - onWriteRequest: ' + 
         ' encounter_index = ' + this._value.readUInt32LE(0) + ' len: ' + this._value.length);
-    // console.log('index: ' + this._value.slice(0,4).toString('hex'));
-    // console.log('Data: '+this._value.slice(4, this._value.length).length);
-    var device_name;
     if (this._value.readUInt32LE(0)==0xFFFFFFFF) { // got name for debugging
-        var device_name = this._value.slice(4+32, 4+32+8).toString();
-        console.log('Name: '+device_name);
+        this.device_name = this._value.slice(4+32, 4+32+8).toString();
+        this._remote.device_name = this.device_name
+        console.log('Name: '+this.device_name);
     } else {
+        if (this.device_name.length > 0) {
+            name = this.device_name;
+	} else {
+            name = this._remote['mac'].replace(/:/g,'')
+	}
         fs.appendFileSync(name, this._value.slice(4, this._value.length));
-        // console.log('remote '+typeof(this._remote['mac']));
     }
     if (this._updateValueCallback) {
         console.log('DataCharacteristic - onWriteRequest: notifying');
